@@ -1,14 +1,3 @@
-# AWS Secrets Manager PSQL Rotation lambda
-
-This repo exists as I needed a password rotation lambda for passwords stored inside AWS Secrets Manager.
-
-The issue with the default one from AWS is that it's using old libraries to connect to the Postgres Database.
-
-This repo uses **Python 3.8** and a statically compiled version of **psycopg2** as there was an issue with a **missing libpq** library if installed through python pip.
-
-These are the changes that are applied for a connection using **psycopg2**:
-
-```diff
 diff --git a/lambda_function.py b/lambda_function.py
 index 7451bac..b688b53 100644
 --- a/lambda_function.py
@@ -59,5 +48,3 @@ index 7451bac..b688b53 100644
          if "server does not support SSL, but SSL was required" in e.args[0]:
              logger.error("Unable to establish SSL/TLS handshake, SSL/TLS is not enabled on the host: %s" % secret_dict['host'])
          elif re.search('server common name ".+" does not match host name ".+"', e.args[0]):
-```
-
